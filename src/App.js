@@ -27,28 +27,41 @@ const App = () => {
     }
   }, [])
 
-  // const addBlog = (event) => {
-  //   event.preventDefault()
-  //   const noteObject = {
-  //     date: new Date().toISOString(),
-  //     important: Math.random() > 0.5,
-  //   	title: newTitle,
-  //     author: newAuthor,
-  //     url: newUrl,
-  //     likes: 0,
-  //     user: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: 'User'
-  //     }
-  //   }
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      date: new Date().toISOString(),
+      important: Math.random() > 0.5,
+    	title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+      likes: 0,
+      user: user
+    }
+    // userが怪しい
 
-  //   noteService
-  //     .create(noteObject)
-  //       .then(returnedNote => {
-  //       setNotes(notes.concat(returnedNote))
-  //       setNewNote('')
-  //     })
-  // }
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewAuthor('')
+        setNewTitle('')
+        setNewUrl('')
+      })
+  }
+
+  const handleAuthorChange = (event) => {
+    console.log(event.target.value)
+    setNewAuthor(event.target.value)
+  }
+  const handleTitleChange = (event) => {
+    console.log(event.target.value)
+    setNewTitle(event.target.value)
+  }
+  const handleUrlChange = (event) => {
+    console.log(event.target.value)
+    setNewUrl(event.target.value)
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -63,6 +76,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
 
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -109,15 +123,16 @@ const App = () => {
     <p>{user.name} logged-in <form onSubmit={logout}><button type="submit">logout</button></form></p>
   )
 
-  // const blogForm = () => (
-  //   <form onSubmit={addBlog}>
-  //     <input
-  //       value={newNote}
-  //       onChange={handleNoteChange}
-  //     />
-  //     <button type="submit">save</button>
-  //   </form>
-  // )
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <p>
+        Title:<input value={newTitle} onChange={handleTitleChange} /><br/>
+        Author:<input value={newAuthor} onChange={handleAuthorChange} /><br/>
+        Url:<input value={newUrl} onChange={handleUrlChange} /><br/>
+        <button type="submit">save</button>
+      </p>
+    </form>
+  )
 
   const blogList = () => (
     blogs.map(blog =>
@@ -132,9 +147,9 @@ const App = () => {
         loginForm() :
         <div>
           {loginInfo()}
+          {blogForm()}
           {blogList()}
         </div>
-        // blogForm()
       }
     </div>
   )
