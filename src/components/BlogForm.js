@@ -1,7 +1,7 @@
 import Togglable from './Togglable'
 import React, { useState } from 'react'
 
-const BlogForm = ({createBlog}) => {
+const BlogForm = ({ createBlog }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -31,14 +31,14 @@ const BlogForm = ({createBlog}) => {
 
   return(
     <Togglable buttonLabel="new note">
-        <form onSubmit={addBlog}>
-            <p>
+      <form onSubmit={addBlog}>
+        <p>
             Title:<input value={newTitle} onChange={handleTitleChange} /><br/>
             Author:<input value={newAuthor} onChange={handleAuthorChange} /><br/>
             Url:<input value={newUrl} onChange={handleUrlChange} />
-            <button type="submit">save</button>
-            </p>
-        </form>
+          <button type="submit">save</button>
+        </p>
+      </form>
     </Togglable>
   )
 }

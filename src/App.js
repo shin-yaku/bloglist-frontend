@@ -91,7 +91,7 @@ const App = () => {
     const blogObject = {
       date: new Date().toISOString(),
       important: Math.random() > 0.5,
-    	title: props.newTitle,
+      title: props.newTitle,
       author: props.newAuthor,
       url: props.newUrl,
       likes: 0,
@@ -99,7 +99,7 @@ const App = () => {
     }
     blogService
       .create(blogObject)
-        .then(returnedBlog => {
+      .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
       })
   }
