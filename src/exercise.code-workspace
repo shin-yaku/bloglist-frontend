@@ -1,10 +1,12 @@
 {
 	"folders": [
 		{
-			"path": "..\\..\\fullstackopen2021-blog"
+			"name": "bloglist-frontend",
+			"path": ".."
 		},
 		{
-			"path": ".."
+			"name": "fullstackopen2021-blog",
+			"path": "..\\..\\fullstackopen2021-blog"
 		}
 	],
 	"settings": {}

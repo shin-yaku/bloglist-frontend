@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import blogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +14,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -88,29 +92,28 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
       <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+    )
+  }
 
   const logout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
@@ -123,16 +126,7 @@ const App = () => {
     <p>{user.name} logged-in <form onSubmit={logout}><button type="submit">logout</button></form></p>
   )
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <p>
-        Title:<input value={newTitle} onChange={handleTitleChange} /><br/>
-        Author:<input value={newAuthor} onChange={handleAuthorChange} /><br/>
-        Url:<input value={newUrl} onChange={handleUrlChange} /><br/>
-        <button type="submit">save</button>
-      </p>
-    </form>
-  )
+
 
   const blogList = () => (
     blogs.map(blog =>
@@ -147,7 +141,7 @@ const App = () => {
         loginForm() :
         <div>
           {loginInfo()}
-          {blogForm()}
+          {blogForm(addBlog,  newTitle, handleTitleChange, newAuthor, handleAuthorChange, newUrl, handleUrlChange)}
           {blogList()}
         </div>
       }
