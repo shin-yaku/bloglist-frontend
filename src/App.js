@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import blogForm from './components/BlogForm'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
+  const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -31,41 +27,6 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      date: new Date().toISOString(),
-      important: Math.random() > 0.5,
-    	title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-      likes: 0,
-      user: user
-    }
-    // userが怪しい
-
-    blogService
-      .create(blogObject)
-        .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewAuthor('')
-        setNewTitle('')
-        setNewUrl('')
-      })
-  }
-
-  const handleAuthorChange = (event) => {
-    console.log(event.target.value)
-    setNewAuthor(event.target.value)
-  }
-  const handleTitleChange = (event) => {
-    console.log(event.target.value)
-    setNewTitle(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    console.log(event.target.value)
-    setNewUrl(event.target.value)
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -126,13 +87,29 @@ const App = () => {
     <p>{user.name} logged-in <form onSubmit={logout}><button type="submit">logout</button></form></p>
   )
 
+  const addBlog = (props) => {
+    const blogObject = {
+      date: new Date().toISOString(),
+      important: Math.random() > 0.5,
+    	title: props.newTitle,
+      author: props.newAuthor,
+      url: props.newUrl,
+      likes: 0,
+      user: user
+    }
+    blogService
+      .create(blogObject)
+        .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+      })
+  }
 
 
-  const blogList = () => (
-    blogs.map(blog =>
+  const blogList = () => {
+    return blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
     )
-  )
+  }
 
   return (
     <div>
@@ -141,7 +118,9 @@ const App = () => {
         loginForm() :
         <div>
           {loginInfo()}
-          {blogForm(addBlog,  newTitle, handleTitleChange, newAuthor, handleAuthorChange, newUrl, handleUrlChange)}
+          <BlogForm
+            createBlog={addBlog}
+          />
           {blogList()}
         </div>
       }
