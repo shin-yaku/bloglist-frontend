@@ -40,4 +40,26 @@ describe('Blog app', function() {
       cy.contains('Matti Luukkainen logged-in').should('not.exist')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.contains('log in').click()
+
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()
+
+      cy.get('#title').type('神ブログ')
+      cy.get('#author').type('神')
+      cy.get('#url').type('http://god.com')
+      cy.contains('save').click()
+
+      cy.contains('神ブログ')
+    })
+  })
+
 })
